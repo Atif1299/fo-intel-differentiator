@@ -129,7 +129,7 @@ export default function HomePage() {
           )}
           {result.records?.length > 0 && (
             <div>
-              <div style={{ ...statusStyle, marginBottom: "0.5rem" }}>Firms referenced</div>
+              <div style={{ ...statusStyle, marginBottom: "0.5rem" }}>Firms used in this answer</div>
               <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
                 {result.records.map((r) => (
                   <li key={r.fo_id || r.common_name} style={{ marginBottom: "0.35rem" }}>

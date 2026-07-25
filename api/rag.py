@@ -196,6 +196,61 @@ def _docs_to_records(docs: list[Document]) -> list[dict[str, Any]]:
     return records
 
 
+_NAME_STOP = {
+    "family",
+    "office",
+    "offices",
+    "capital",
+    "management",
+    "company",
+    "group",
+    "partners",
+    "the",
+    "and",
+    "for",
+}
+
+
+def _name_matches_text(name: str, text: str) -> bool:
+    """True if firm name (or its distinctive tokens) appears in text."""
+    n = (name or "").strip().lower()
+    t = (text or "").lower()
+    if not n or not t:
+        return False
+    if n in t:
+        return True
+    toks = [x for x in re.findall(r"[a-z0-9]+", n) if len(x) > 3 and x not in _NAME_STOP]
+    if not toks:
+        return False
+    # Require the primary distinctive token (e.g. Westerman, Matter, ckandcompany)
+    return toks[0] in t
+
+
+def _records_for_customer(query: str, docs: list[Document], answer: str | None) -> list[dict[str, Any]]:
+    """
+    Customer-facing firm list must match the answer, not every retrieval neighbor.
+
+    - Named-firm questions → only firms cited in the answer / named in the query
+    - List / exploratory questions → unique retrieved firms (semantic neighbors OK)
+    """
+    all_recs = _docs_to_records(docs)
+    if not all_recs:
+        return []
+
+    q = query or ""
+    ans = answer or ""
+
+    cited = [r for r in all_recs if _name_matches_text(str(r.get("common_name") or ""), ans)]
+    if cited:
+        return cited
+
+    named = [r for r in all_recs if _name_matches_text(str(r.get("common_name") or ""), q)]
+    if named:
+        return named
+
+    return all_recs
+
+
 def generate_node(state: RagState) -> RagState:
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     docs = state.get("docs") or []
@@ -212,8 +267,10 @@ def generate_node(state: RagState) -> RagState:
         "You are an investor-relations research assistant for verified Family Office data. "
         "Answer ONLY using the CONTEXT. Do not invent contacts, AUM, or FO types. "
         "If CONTEXT does not support a claim, omit it. "
+        "When the question is about one named firm, answer only about that firm — "
+        "do not mention other firms from CONTEXT unless the question asks to compare or list. "
         "Write clear prose for a non-technical IR reader. "
-        "End with a short 'Based on:' line listing firm names you used."
+        "End with a short 'Based on:' line listing only the firm names you actually used."
     )
     user = f"QUESTION:\n{state.get('query')}\n\nCONTEXT:\n{context}"
     resp = llm.invoke(
@@ -223,22 +280,31 @@ def generate_node(state: RagState) -> RagState:
         ]
     )
     answer = (resp.content or "").strip() if hasattr(resp, "content") else str(resp)
+    query = state.get("query") or ""
     return {
         **state,
         "status": "ok",
         "message": "Answer grounded in retrieved Family Office records.",
         "answer": answer,
-        "records": _docs_to_records(docs),
+        "records": _records_for_customer(query, docs, answer),
     }
 
 
 def decline_node(state: RagState) -> RagState:
+    # Declines should not advertise unrelated near-neighbors as "referenced"
+    docs = state.get("docs") or []
+    query = state.get("query") or ""
+    named = [
+        r
+        for r in _docs_to_records(docs)
+        if _name_matches_text(str(r.get("common_name") or ""), query)
+    ]
     return {
         **state,
         "status": "insufficient_evidence",
         "message": DECLINE_MESSAGE,
         "answer": None,
-        "records": _docs_to_records(state.get("docs") or []),
+        "records": named,
     }
 
 

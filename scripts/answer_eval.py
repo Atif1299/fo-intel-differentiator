@@ -21,24 +21,59 @@ CASES: list[dict[str, Any]] = [
         "query": "What type of family office is Matter Family Office?",
         "expect_status": "ok",
         "must_mention_any": ["Matter", "multi"],
+        "min_records": 1,
+        "max_records": 1,
     },
     {
         "id": "known_sfo",
         "query": "Is ckandcompany a single-family office?",
         "expect_status": "ok",
         "must_mention_any": ["ckandcompany", "single", "family"],
+        "min_records": 1,
+        "max_records": 1,
     },
     {
         "id": "swfi_sfo",
         "query": "What does Westerman Capital do?",
         "expect_status": "ok",
         "must_mention_any": ["Westerman"],
+        "min_records": 1,
+        "max_records": 1,
     },
     {
         "id": "sfo_filter",
         "query": "List single-family offices with investment or venture signals",
         "expect_status": "ok",
         "must_mention_any": ["family"],
+        "min_records": 2,
+    },
+    {
+        "id": "multi_mfo_list",
+        "query": "Which family offices are multi-family offices?",
+        "expect_status": "ok",
+        "must_mention_any": ["multi", "family"],
+        "min_records": 2,
+    },
+    {
+        "id": "multi_us_sfo",
+        "query": "List family offices in Texas or Dallas",
+        "expect_status": "ok",
+        "must_mention_any": ["family"],
+        "min_records": 2,
+    },
+    {
+        "id": "multi_signal_scan",
+        "query": "Which family offices have recent investment or hiring signals?",
+        "expect_status": "ok",
+        "must_mention_any": ["family"],
+        "min_records": 2,
+    },
+    {
+        "id": "multi_mandate",
+        "query": "Name family offices that invest in real estate or private equity",
+        "expect_status": "ok",
+        "must_mention_any": ["family"],
+        "min_records": 2,
     },
     {
         "id": "nonsense_decline",
@@ -60,11 +95,12 @@ def run_case(client: httpx.Client, base: str, case: dict[str, Any]) -> dict[str,
     r.raise_for_status()
     body = r.json()
     status = body.get("status")
+    records = body.get("records") or []
     text = " ".join(
         [
             str(body.get("answer") or ""),
             str(body.get("message") or ""),
-            json.dumps(body.get("records") or []),
+            json.dumps(records),
         ]
     )
     ok_status = status == case["expect_status"]
@@ -73,7 +109,12 @@ def run_case(client: httpx.Client, base: str, case: dict[str, Any]) -> dict[str,
     if needles and case["expect_status"] == "ok":
         low = text.lower()
         ok_text = any(n.lower() in low for n in needles)
-    passed = ok_status and ok_text
+    n_recs = len(records)
+    ok_min = n_recs >= int(case.get("min_records") or 0)
+    ok_max = True
+    if case.get("max_records") is not None:
+        ok_max = n_recs <= int(case["max_records"])
+    passed = ok_status and ok_text and ok_min and ok_max
     return {
         "id": case["id"],
         "passed": passed,
@@ -81,6 +122,8 @@ def run_case(client: httpx.Client, base: str, case: dict[str, Any]) -> dict[str,
         "got_status": status,
         "ok_status": ok_status,
         "ok_text": ok_text,
+        "record_count": n_recs,
+        "record_names": [x.get("common_name") for x in records],
         "answer_preview": (body.get("answer") or body.get("message") or "")[:200],
     }
 

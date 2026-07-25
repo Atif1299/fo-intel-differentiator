@@ -65,16 +65,20 @@ This gate is the answer-layer control required by the assessment: prompt instruc
 Customer UI: https://fo-intel-web-95044197271.us-central1.run.app  
 API: https://fo-intel-api-95044197271.us-central1.run.app  
 
-### Answer-eval suite (local + live Cloud Run) — **6/6 passed** (2026-07-25)
+### Answer-eval suite (local + live Cloud Run) — **10/10 passed** (2026-07-25)
 
-| Query | Result | Notes |
-|-------|--------|-------|
-| What type of family office is Matter Family Office? | ok | MFO grounded |
-| Is ckandcompany a single-family office? | ok | SFO grounded |
-| What does Westerman Capital do? | ok | Class B discovery firm; Class C site proof in dataset |
-| List single-family offices with investment or venture signals | ok | Structural + semantic |
-| Phone of Emperor of Mars Family Office XYZQwerty999? | insufficient_evidence | Gate decline |
-| asdf qwerty zxcvbn unrelated gibberish 12345 | insufficient_evidence | Gate decline |
+| Query | Result | Firms shown | Notes |
+|-------|--------|-------------|-------|
+| What type of family office is Matter Family Office? | ok | 1 | MFO grounded |
+| Is ckandcompany a single-family office? | ok | 1 | SFO grounded |
+| What does Westerman Capital do? | ok | 1 | Named-firm only (not neighbors) |
+| List single-family offices with investment or venture signals | ok | 6 | Multi-firm list |
+| Which family offices are multi-family offices? | ok | 6 | Multi-firm MFO list |
+| List family offices in Texas or Dallas | ok | 3 | Multi-firm geo list |
+| Which family offices have recent investment or hiring signals? | ok | 3 | Multi-firm signals |
+| Name family offices that invest in real estate or private equity | ok | 3 | Multi-firm mandate |
+| Phone of Emperor of Mars Family Office XYZQwerty999? | insufficient_evidence | 0 | Gate decline |
+| asdf qwerty zxcvbn unrelated gibberish 12345 | insufficient_evidence | 0 | Gate decline |
 
 ### Post-rename search smoke (live API `/search`, after geo-name pass)
 
