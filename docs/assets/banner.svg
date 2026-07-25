@@ -1,21 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="FO Intel">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="280" viewBox="0 0 1280 280" role="img" aria-label="FO Intel">
   <defs>
-    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#22d3ee"/>
-      <stop offset="55%" stop-color="#818cf8"/>
-      <stop offset="100%" stop-color="#e879f9"/>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="35%" stop-color="#3b82f6"/>
+      <stop offset="65%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#312e81" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#0b1020" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-  <rect width="1280" height="320" fill="#0b1020"/>
-  <rect width="1280" height="320" fill="url(#glow)"/>
-  <circle cx="180" cy="70" r="3" fill="#a78bfa" opacity="0.85"/>
-  <circle cx="980" cy="90" r="2.5" fill="#34d399" opacity="0.8"/>
-  <circle cx="1100" cy="220" r="3" fill="#f472b6" opacity="0.75"/>
-  <circle cx="260" cy="240" r="2" fill="#22d3ee" opacity="0.7"/>
-  <text x="640" y="155" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="4" fill="url(#titleGrad)">FO INTEL</text>
-  <text x="640" y="210" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="6" fill="#e5e7eb">FAMILY OFFICE INTELLIGENCE · MICRO-RAG</text>
+  <rect width="1280" height="280" rx="18" ry="18" fill="#0b0e14"/>
+  <circle cx="120" cy="55" r="2.2" fill="#2dd4bf"/>
+  <circle cx="210" cy="40" r="2.2" fill="#a78bfa"/>
+  <circle cx="1080" cy="70" r="2.2" fill="#f472b6"/>
+  <circle cx="1180" cy="210" r="2.2" fill="#2dd4bf"/>
+  <circle cx="90" cy="200" r="2" fill="#22d3ee"/>
+  <text x="640" y="145" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="84" font-weight="700" letter-spacing="6" fill="url(#g)">FO INTEL</text>
+  <text x="640" y="200" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="500" letter-spacing="6" fill="#9ca3af">FAMILY OFFICE INTELLIGENCE Â· MICRO-RAG</text>
 </svg>
