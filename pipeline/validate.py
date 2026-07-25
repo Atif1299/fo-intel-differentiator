@@ -17,6 +17,7 @@ from typing import Any
 from pipeline.enrich_lib.schema import utc_now_iso
 from pipeline.validate_lib.checks import (
     blank_contact,
+    brand_key,
     contact_needs_blank,
     dedupe_keys,
     inclusion_checks,
@@ -67,6 +68,7 @@ def validate() -> tuple[Path, Path]:
 
     seen_names: set[str] = set()
     seen_domains: set[str] = set()
+    seen_brands: set[str] = set()
     passed: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     reasons: dict[str, int] = {}
@@ -81,6 +83,7 @@ def validate() -> tuple[Path, Path]:
             continue
 
         name_key, domain = dedupe_keys(row)
+        bkey = brand_key(row)
         if name_key and name_key in seen_names:
             row["rejection_reason"] = "duplicate_name"
             rejected.append(row)
@@ -91,12 +94,19 @@ def validate() -> tuple[Path, Path]:
             rejected.append(row)
             reasons["duplicate_website_domain"] = reasons.get("duplicate_website_domain", 0) + 1
             continue
+        if bkey and bkey in seen_brands:
+            row["rejection_reason"] = "duplicate_brand"
+            rejected.append(row)
+            reasons["duplicate_brand"] = reasons.get("duplicate_brand", 0) + 1
+            continue
 
         row = _apply_contact_governance(row)
         maybe_improve_geo_name(row)
         row["validated_at"] = utc_now_iso()
         if name_key:
             seen_names.add(name_key)
+        if bkey:
+            seen_brands.add(bkey)
         if domain:
             seen_domains.add(domain)
         passed.append(row)

@@ -27,7 +27,7 @@ Each exported FO row → 2–3 LangChain `Document`s with metadata (`fo_id`, `fo
 2. **principal** — only if principal fields present  
 3. **signal** — only if signal_1/2 present  
 
-**Current index:** **124** documents / **50** firms (`data/index/index_meta.json`) after the on-site name hygiene pass.
+**Current index:** **118** documents / **50** firms (`data/index/index_meta.json`) after sample-audit scrub.
 
 ## Embedding model
 

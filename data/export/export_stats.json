@@ -1,8 +1,8 @@
 {
   "exported": 50,
   "by_fo_type": {
-    "single_family_office": 31,
-    "multi_family_office": 19
+    "single_family_office": 29,
+    "multi_family_office": 21
   },
   "primary_source_counts": {
     "ddg:sfo_sf": 2,
@@ -11,16 +11,15 @@
     "ddg:fo_seattle": 4,
     "ddg:sfo_ny": 1,
     "ddg:extra_phoenix": 1,
-    "ddg:sfo_texas": 5,
+    "ddg:sfo_texas": 4,
     "ddg:sfo_boston": 2,
-    "rss:google_news_fo": 14,
+    "rss:google_news_fo": 12,
     "swfi:fo_profiles": 4,
     "ddg:extra_midwest": 1,
     "ddg:sfo_chicago": 2,
-    "ddg:fo_london": 2,
-    "ddg:fo_denver": 3,
-    "ddg:hygiene_topup": 1,
+    "ddg:sample_audit_fill": 6,
     "ddg:fo_invests": 1,
+    "ddg:fo_denver": 3,
     "ddg:fo_atlanta": 1,
     "ddg:fo_la": 1,
     "ddg:mfo_us": 1
@@ -32,21 +31,20 @@
     "ddg:fo_seattle": 0.08,
     "ddg:sfo_ny": 0.02,
     "ddg:extra_phoenix": 0.02,
-    "ddg:sfo_texas": 0.1,
+    "ddg:sfo_texas": 0.08,
     "ddg:sfo_boston": 0.04,
-    "rss:google_news_fo": 0.28,
+    "rss:google_news_fo": 0.24,
     "swfi:fo_profiles": 0.08,
     "ddg:extra_midwest": 0.02,
     "ddg:sfo_chicago": 0.04,
-    "ddg:fo_london": 0.04,
-    "ddg:fo_denver": 0.06,
-    "ddg:hygiene_topup": 0.02,
+    "ddg:sample_audit_fill": 0.12,
     "ddg:fo_invests": 0.02,
+    "ddg:fo_denver": 0.06,
     "ddg:fo_atlanta": 0.02,
     "ddg:fo_la": 0.02,
     "ddg:mfo_us": 0.02
   },
-  "max_primary_share": 0.28,
+  "max_primary_share": 0.24,
   "discovery_gate_35pct_ok": true,
-  "finished_at": "2026-07-25T11:05:59+00:00"
+  "finished_at": "2026-07-25T14:14:21+00:00"
 }

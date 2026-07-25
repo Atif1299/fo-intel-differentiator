@@ -51,6 +51,47 @@ _NON_FIRM_WEBSITE_HOSTS = _NON_IDENTITY_DOMAINS | {
 _FO_ID_DENYLIST = {
     "multi-family-office-asset-pools-report-c199b6f932",
     "miami-single-family-office-92ff8e78b8",
+    # Sample-audit rejects: network / platform / wrong-entity / weak FO-services brand
+    "global-family-office-db539972ce",  # tfoa.info SFO peer network — not an FO entity
+    "your-elite-single-family-office-powered-by-qp-gl-8e06db07b1",  # manages SFOs for multiple families
+    "office-in-london-your-expert-in-global-wealth-ba21e9f7fd",  # wealth-services marketing, weak Rule 2
+    "london-based-single-family-office-managing-wealt-baa7674609",  # dakota.com allocator intel ≠ FO
+}
+
+# Domains that must never ship as the FO's institutional identity
+_HARD_NON_FO_DOMAINS = {
+    "tfoa.info",
+    "dakota.com",
+    "qp-global.com",
+}
+
+_BRAND_STOP = {
+    "family",
+    "office",
+    "offices",
+    "capital",
+    "management",
+    "company",
+    "group",
+    "wealth",
+    "advisors",
+    "advisor",
+    "financial",
+    "investments",
+    "investment",
+    "partners",
+    "global",
+    "the",
+    "and",
+    "for",
+    "llc",
+    "llp",
+    "ltd",
+    "inc",
+    "single",
+    "multi",
+    "private",
+    "trust",
 }
 
 _CRUMB_NAME = re.compile(
@@ -116,6 +157,22 @@ def _raw_host(url: str | None) -> str | None:
 def dedupe_keys(record: dict[str, Any]) -> tuple[str, str | None]:
     name = record.get("legal_name") or record.get("common_name") or ""
     return normalize_name(str(name)), website_domain(record.get("website"))
+
+
+def brand_key(record: dict[str, Any]) -> str | None:
+    """
+    Distinctive brand token for near-duplicate collapse (Cresset / Farther).
+    Returns None when no stable brand token exists.
+    """
+    name = f"{record.get('legal_name') or ''} {record.get('common_name') or ''}".strip()
+    toks = [
+        t
+        for t in re.findall(r"[a-z0-9]+", name.lower())
+        if len(t) >= 4 and t not in _BRAND_STOP
+    ]
+    if not toks:
+        return None
+    return toks[0]
 
 
 def contact_needs_blank(field_key: str, record: dict[str, Any]) -> bool:
@@ -221,10 +278,35 @@ def entity_quality_reject(record: dict[str, Any]) -> str | None:
     if _CATEGORY_ONLY.match(name):
         return "entity_category_only"
 
+    evidence = (record.get("inclusion_evidence_summary") or "").strip()
+    ev_l = evidence.lower()
+    # Networks / associations / peer clubs are not FO entities (Rule 2)
+    if re.search(
+        r"peer\s+network|membership\s+network|association\s+of\s+(?:single[-\s]?)?family|"
+        r"community\s+of\s+single\s+family|sfo\s+community",
+        ev_l,
+    ):
+        return "entity_network_not_fo"
+    # SFO label while evidence describes multi-family / outsourced platform → coerce to MFO
+    if record.get("fo_type") == "single_family_office" and re.search(
+        r"managing\s+(?:the\s+)?single\s+family\s+offices\s+for|"
+        r"outsourced\s+family\s+office|"
+        r"serving\s+a\s+limited\s+number\s+of\s+families|"
+        r"handful\s+of\s+(?:distinguished\s+)?families|"
+        r"multiple\s+families",
+        ev_l,
+    ):
+        record["fo_type"] = "multi_family_office"
+        record.setdefault("validation_audit", {})["coerced_sfo_to_mfo"] = True
+        fields = record.setdefault("fields", {})
+        if "fo_type" in fields and isinstance(fields["fo_type"], dict):
+            fields["fo_type"]["value"] = "multi_family_office"
+            fields["fo_type"]["method"] = "validation_coerce_sfo_to_mfo"
+
     _prefer_firm_website(record)
     host = _raw_host(record.get("website"))
 
-    _HARD_BAD = {"withintelligence.com", "familyofficehub.io"}
+    _HARD_BAD = {"withintelligence.com", "familyofficehub.io"} | _HARD_NON_FO_DOMAINS
     if host and host in _HARD_BAD:
         return "entity_website_non_firm"
 

@@ -2,7 +2,7 @@
 
 Stage 1 deliverable: full chain for three records selected from the pipeline export `data/export/family_offices_50.csv` (documented after export — not hand-inserted into the CSV).
 
-Export snapshot these chains reconcile with: **50** rows, SFO **31** / MFO **19**, max primary discovery share **28%** (`rss:google_news_fo`) — `data/export/export_stats.json`.
+Export snapshot these chains reconcile with: **50** rows, SFO **29** / MFO **21**, max primary discovery share **24%** (`rss:google_news_fo`) — `data/export/export_stats.json`.
 
 ## Record 1 — `fo_id`: `matter-family-office-8dd64fb0e1`
 
@@ -89,7 +89,7 @@ Export snapshot these chains reconcile with: **50** rows, SFO **31** / MFO **19*
 |-------|--------|
 | Firm is an FO entity of stated type | **Verified** via Class C page text + validator gates |
 | Discovery ≠ sole proof | **Verified** — each chain shows Class C after A/B find |
-| Discovery mix on final 50 | **Verified** in `export_stats.json` (max primary share **28%** RSS) |
+| Discovery mix on final 50 | **Verified** in `export_stats.json` (max primary share **24%** RSS) |
 | Email/phone reachability | **Not claimed** when blank; blanked when provenance insufficient |
 | What could be wrong | Marketing copy that mimics FO language without being an FO entity; Falcon sample check is the external falsifier |
 

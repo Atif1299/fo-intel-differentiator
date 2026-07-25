@@ -8,7 +8,7 @@ Artifacts that must reconcile with this note: `data/raw/discovery_stats.json`, `
 
 | | |
 |--|--|
-| **Observed** | Multi-adapter discovery produced 261 unique candidates; enrich + validate gates produced exactly 50 shippable rows; export max primary share 28% RSS; answer eval **10/10** local/live (incl. multi-firm lists). |
+| **Observed** | Multi-adapter discovery produced 261 unique candidates; post-sample-audit validate/export produced exactly 50 unique firms; max primary share **24%** RSS; answer eval **10/10** local/live (incl. multi-firm lists). |
 | **Assumed** | Public web + filings + news are enough to *find* many real FOs; Class C site language is enough to *prove* FO type for inclusion when validator gates pass. |
 | **Could be wrong if** | Site marketing mimics FO language without being an FO entity; or discovery systematically misses opaque SFOs with no web footprint. |
 | **What would change the conclusion** | Sample audit by Falcon finding misclassified FO types, or primary discovery share >35% after recompute. |
@@ -75,25 +75,26 @@ Stages: `python -m pipeline.validate` → `validated.jsonl` + `rejected.jsonl`; 
 - Exactly **50** rows in `data/export/family_offices_50.csv`  
 - Sidecar `data/export/provenance.jsonl`  
 - Primary discovery source share ≤ **35%**  
-- **Shipped:** SFO **31** / MFO **19**; max primary share **28%** = `rss:google_news_fo` (`export_stats.json`)  
+- **Shipped:** SFO **29** / MFO **21**; max primary share **24%** = `rss:google_news_fo` (`export_stats.json`)  
 
 ### Volumes (validate — `validate_stats.json`)
 
-- Input enriched **251** → passed **50** / rejected **201**  
-- Top reject reasons: `inclusion_pass_false` **166**, `duplicate_name` **30**, plus entity-hygiene codes  
+- Input enriched **266** → passed **50** / rejected **216**  
+- Reject codes include brand near-dupes, denylisted network/platform rows, and inclusion failures  
 
-### Post-export name hygiene (not invention)
+### Sample-audit scrub (pre-submit)
 
-Four geo-SERP common names that had known firm domains were renamed to on-site brand/legal names only when corroborated (`scripts/rename_geo_crumbs.py`):
+Dropped / refused before final ship:
 
-| Prior common_name | On-site / legal name applied |
-|-------------------|------------------------------|
-| Miami Family Office | The Miami Family Office |
-| Dallas Single Family Office | Sowell & Company |
-| Boston Single Family Office | Old Mountain |
-| London-based single family office | Dakota |
+- Duplicate brand rows (second **Cresset**, second **Farther**)  
+- **Global Family Office** (tfoa.info peer network — not an FO entity)  
+- **(QP) Global** as clean SFO (multi-family platform language)  
+- **Dakota** (dakota.com allocator intel ≠ FO entity)  
+- **Family Office in London** (weak FO-services marketing vs entity bar)  
 
-CSV, provenance, validated/enriched JSONL, FAISS index, and Cloud Run API were refreshed after this pass.
+Coerced: **Alpha Capital Family Office** SFO → MFO (outsourced / multiple families).  
+
+Fill to 50: six disclosed **manual spot-checks** (ICONIQ, Pathstone, Clearstead, Hillspire, Thiel Capital, MSD Partners) where automated classify returned `unknown_type` but public FO identity is clear — method `manual_spotcheck` in provenance.  
 
 ### Shipped actionability (honest fill rates)
 
@@ -101,13 +102,13 @@ Counted on `family_offices_50.csv` after renames:
 
 | Field | Filled / 50 |
 |-------|-------------|
-| principal_name | 31 |
-| principal_email | 11 |
-| principal_phone | 11 |
+| principal_name | 29 |
+| principal_email | 10 |
+| principal_phone | 10 |
 | principal_linkedin | 2 |
-| signal_1_summary | 37 |
-| signal_1_date | 21 |
-| website | 39 |
+| signal_1_summary | 34 |
+| signal_1_date | 18 |
+| website | 40 |
 | investment_thesis | 22 |
 
 Blanks are intentional candor where Rule 1 could not be met — not guesses labeled verified.
@@ -129,10 +130,10 @@ Three full chains: `docs/validation_chains.md` (Matter / ckandcompany / Westerma
 - Opaque SFOs with no web footprint remain systematically under-discovered  
 - Wiki adapter added little unique after merge  
 - Geography skew toward US English web/news  
-- Contact density is still sparse (11 emails / 11 phones) — candid, not sellable as a dense dialer file  
+- Contact density is still sparse (10 emails / 10 phones) — candid, not sellable as a dense dialer file  
 - Directory-only evidence (e.g. Altss) may ship with blank website — weaker corroboration; disclosed  
-- Dakota’s public site is primarily an allocator-intel brand; inclusion rested on pipeline Class C evidence at enrich time — treat as higher residual risk if Falcon sample-checks entity type  
-- RSS remains the largest single primary share (28%) — under gate, but still the main concentration risk  
+- Six fill rows used disclosed `manual_spotcheck` where OpenAI returned `unknown_type` — human judgment visible in provenance  
+- RSS remains the largest single primary share (**24%**) — under gate, but still the main concentration risk  
 - Answer-layer grounding is score-thresholded on this 50-row corpus; re-tune if the file changes materially  
 
 ## What this methodology refuses

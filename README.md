@@ -27,9 +27,10 @@ The 50-row CSV is produced by `pipeline/` (discover → enrich → validate → 
 From `data/export/export_stats.json` after hygiene + on-site name pass:
 
 - **50** unique qualifying rows  
-- **31** `single_family_office` / **19** `multi_family_office`  
-- Max primary discovery share: **28%** (`rss:google_news_fo`) — under ≤35% hard gate  
-- High-value cell fill on shipped CSV (honest blanks allowed): principal name **31**/50, email **11**/50, phone **11**/50, signal_1 **37**/50, website **39**/50  
+- **29** `single_family_office` / **21** `multi_family_office`  
+- Max primary discovery share: **24%** (`rss:google_news_fo`) — under ≤35% hard gate  
+- High-value cell fill on shipped CSV (honest blanks allowed): principal name **29**/50, email **10**/50, phone **10**/50, signal_1 **34**/50, website **40**/50  
+- Sample-audit scrub: brand near-dupes collapsed (Cresset/Farther); network/platform rows refused (Global FO / QP / Dakota); Alpha coerced SFO→MFO; fill via disclosed manual spot-checks where classify returned unknown
 
 ## Docs
 
