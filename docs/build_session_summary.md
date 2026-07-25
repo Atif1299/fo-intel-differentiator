@@ -2,7 +2,7 @@
 
 Keep under half a page. (Stage 1 deliverable.)
 
-1. **Approximate build time:** ~14–16 hours of actual working time across 25 Jul 2026 (PKT), inside the 48h Stage 1 window — not continuous coding. Not padded.
+1. **Approximate build time:** ~10–12 hours of actual working time across 25 Jul 2026 (PKT), inside the 48h Stage 1 window — not continuous coding. Not padded.
 
 2. **Main work sessions:**
    - Design lock (Rule 1/2, ≤35% discovery, SFO preference) + multi-source discovery (261 candidates)  
