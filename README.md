@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/banner.svg" alt="FO Intel — Family Office Intelligence" width="920"/>
+  <img src="docs/assets/banner.png" alt="FO Intel — Family Office Intelligence" width="920"/>
 </p>
 
 <p align="center">
