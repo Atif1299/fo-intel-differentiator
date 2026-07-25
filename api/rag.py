@@ -251,6 +251,16 @@ def _records_for_customer(query: str, docs: list[Document], answer: str | None) 
     return all_recs
 
 
+def _plain_text_answer(text: str) -> str:
+    """Strip Markdown emphasis so the customer UI never shows raw **bold** markers."""
+    t = text or ""
+    t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
+    t = re.sub(r"__([^_]+)__", r"\1", t)
+    t = re.sub(r"(?<!\w)\*([^*\n]+)\*(?!\w)", r"\1", t)
+    t = re.sub(r"`([^`]+)`", r"\1", t)
+    return t.strip()
+
+
 def generate_node(state: RagState) -> RagState:
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     docs = state.get("docs") or []
@@ -269,7 +279,14 @@ def generate_node(state: RagState) -> RagState:
         "If CONTEXT does not support a claim, omit it. "
         "When the question is about one named firm, answer only about that firm — "
         "do not mention other firms from CONTEXT unless the question asks to compare or list. "
-        "Write clear prose for a non-technical IR reader. "
+        "Write clear plain prose for a non-technical IR reader. "
+        "Do NOT use Markdown: no asterisks for bold/italic, no # headings, no bullet markers like -, *, or []. "
+        "For list questions: number firms as '1.' '2.' etc. For EACH firm include one short sentence "
+        "drawn from CONTEXT (type, location, thesis, mandate, or signal). Never return a bare name-only list. "
+        "If CONTEXT lacks a detail for a firm, say only what is present — do not pad. "
+        "CRITICAL: If CONTEXT metadata lists fo_type as single_family_office or multi_family_office, "
+        "treat that firm as a family office of that type. Never say it is not a family office or that it "
+        "does not identify as one. Prefer inclusion evidence / thesis over contradictory signal snippets. "
         "End with a short 'Based on:' line listing only the firm names you actually used."
     )
     user = f"QUESTION:\n{state.get('query')}\n\nCONTEXT:\n{context}"
@@ -280,6 +297,7 @@ def generate_node(state: RagState) -> RagState:
         ]
     )
     answer = (resp.content or "").strip() if hasattr(resp, "content") else str(resp)
+    answer = _plain_text_answer(answer)
     query = state.get("query") or ""
     return {
         **state,
