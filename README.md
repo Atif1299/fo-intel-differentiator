@@ -2,9 +2,8 @@
 
 Pipeline-built dataset of **50 validated family office records**, served through a production-shaped Micro-RAG (LangChain FAISS + LangGraph grounding) and a **customer-facing** Next.js UI on GCP Cloud Run.
 
-**GitHub:** https://github.com/Atif1299/fo-intel-differentiator  
 **Live customer URL:** https://fo-intel-web-95044197271.us-central1.run.app  
-**API (supporting):** https://fo-intel-api-95044197271.us-central1.run.app  
+**API (supporting):** https://fo-intel-api-95044197271.us-central1.run.app/docs  
 
 The 50-row CSV is produced by `pipeline/` (discover → enrich → validate → export). It was not hand-assembled row by row.
 
