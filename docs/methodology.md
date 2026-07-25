@@ -8,7 +8,7 @@ Artifacts that must reconcile with this note: `data/raw/discovery_stats.json`, `
 
 | | |
 |--|--|
-| **Observed** | Multi-adapter discovery produced 261 unique candidates; enrich + validate gates produced exactly 50 shippable rows; export max primary share 28% RSS; answer eval 6/6 local and live. |
+| **Observed** | Multi-adapter discovery produced 261 unique candidates; enrich + validate gates produced exactly 50 shippable rows; export max primary share 28% RSS; answer eval **10/10** local/live (incl. multi-firm lists). |
 | **Assumed** | Public web + filings + news are enough to *find* many real FOs; Class C site language is enough to *prove* FO type for inclusion when validator gates pass. |
 | **Could be wrong if** | Site marketing mimics FO language without being an FO entity; or discovery systematically misses opaque SFOs with no web footprint. |
 | **What would change the conclusion** | Sample audit by Falcon finding misclassified FO types, or primary discovery share >35% after recompute. |
