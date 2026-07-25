@@ -1,10 +1,12 @@
 # DESIGN — FO Intel Differentiator (Stage 1)
 
-> Locked in Phase 0. Changes require an explicit entry in `../BUILD_TRACKER.md` Locked decisions.
+> Locked in Phase 0. Material changes belong in the build tracker / methodology blind spots — not silent drift.
 
 ## Hypothesis
 
-Multi-class discovery + separate proof sources will produce a more decision-grade Family Office file than copying one public directory at scale. If any single discovery source exceeds 35% of the final 50, we treat that as a failed discovery design and rebalance before export.
+Multi-class discovery plus **separate** proof sources produces a more decision-grade Family Office file than copying one public directory at scale. If any single **discovery** source exceeds **35%** of the final 50, treat that as a failed discovery design and rebalance before export.
+
+**What we verified on the shipped file:** max primary share **28%** (`rss:google_news_fo`) — gate held (`data/export/export_stats.json`).
 
 ## Inclusion bar (Rule 2 — firm)
 
@@ -18,22 +20,35 @@ Multi-class discovery + separate proof sources will produce a more decision-grad
 
 ### Affirmative evidence required
 
-A firm qualifies only when we have affirmative evidence it **is** a family office. Acceptable evidence classes (need at least one strong, preferably corroborated):
+A firm qualifies only when we have affirmative evidence it **is** a family office. Acceptable evidence (need at least one strong Class C proof, preferably corroborated):
 
-- Firm self-describes as single- or multi-family office on its own site or materials
-- Regulatory / filing language that names it as a family office
-- Authoritative directory listing **plus** independent corroboration (site, press, filing)
+- Firm self-describes as single- or multi-family office on its own site or materials  
+- Regulatory / filing language that names it as a family office  
+- Authoritative directory listing **plus** independent corroboration (site, press, filing)  
 - Principal / family wealth context that clearly names an FO **entity** (not a person alone)
 
 **Not sufficient alone:** serves wealthy clients; “family office services” marketing by an RIA/bank; family-related words in the name; appearance on a FO-adjacent list without type confirmation.
 
 ### Mix target
 
-Aim for **≥15** verified `single_family_office` records in the final 50 **if evidence supports**. Never relabel MFO → SFO. Prefer fewer honest SFOs over padded misclassified rows.
+Aim for **≥15** verified `single_family_office` records in the final 50 **if evidence supports**. Never relabel MFO → SFO.
+
+**Shipped mix:** SFO **31** / MFO **19** (`export_stats.json`).
 
 ### Rejects
 
-Duplicates, unconfirmed identity, failed inclusion standard → `data/audit/rejected.jsonl` (not customer CSV).
+Duplicates, unconfirmed identity, failed inclusion, entity-hygiene fails → `data/audit/rejected.jsonl` (not customer CSV).
+
+### Entity hygiene (post-self-audit gate)
+
+Refuse to ship as FO entities:
+
+- Report / title crumbs (e.g. “Asset Pools Report”)  
+- Hub / publisher firm homes used as the FO identity  
+- Category-only names  
+- Geo SERP crumbs **without** a known firm domain  
+
+News-host URLs are blanked rather than treated as institutional websites. Geo crumbs that **did** map to firm domains were later renamed to on-site brand/legal names only when corroborated (see methodology) — no invented names.
 
 ## Cell bar (Rule 1)
 
@@ -43,88 +58,77 @@ Every high-value field in provenance carries:
 {
   "value": "...",
   "sources": ["https://..."],
-  "method": "page_extract|search_snippet|manual_spotcheck|...",
+  "method": "page_extract|search_snippet|openai_classify_extract|onsite_name_hygiene|...",
   "status": "verified|could_not_verify|rejected",
   "checked_at": "ISO-8601"
 }
 ```
 
-- Honest blank + `could_not_verify` = candor (allowed)
-- Guessed value labeled `verified` = refuse to ship (self-disqualify)
-- Validation governs release: failed email/check → blank customer field; keep detail in audit only
+- Honest blank + `could_not_verify` = candor (allowed)  
+- Guessed value labeled `verified` = refuse to ship  
+- Validation governs release: unsafe/unproven contact → blank customer field; detail stays in audit only  
 
 ## Source classes (discovery ≠ proof)
 
-| Class | Role | Examples (free / public) | Cap |
-|-------|------|--------------------------|-----|
-| A — Web discovery | Find candidate names | Targeted search, news (“family office” + geo), EDGAR search hits | Part of multi-class mix |
-| B — Structured public lists | Seed only | Public FO directories, filings naming FOs, open lists | Must not dominate |
-| C — Entity proof | Confirm FO type | Firm About pages, LinkedIn company, press with explicit FO language | Required for ship |
-| D — Principal / contact | Actionability | LinkedIn profiles, team pages, public contact pages | No paid contact DB as primary proof |
-| E — Signals | Why-now | Dated news, investments, hirings (date + URL) | Strongly preferred |
+| Class | Role | Examples used | Cap |
+|-------|------|---------------|-----|
+| A — Web discovery | Find candidate names | DuckDuckGo geo/query adapters, Google News RSS, SEC EDGAR full-text | Part of multi-class mix |
+| B — Structured public lists | Seed only | SWFI/public FO profile HTML; wiki adapter ran (little unique after merge) | Must not dominate |
+| C — Entity proof | Confirm FO type | Firm site / about / careers pages (`class_c_fetch`) | Required to ship |
+| D — Principal / contact | Actionability | Team pages, LinkedIn when present | No paid contact DB as primary proof |
+| E — Signals | Why-now | Dated news / activity with URL when extractable | Preferred; blanks honest |
 
-**Hard gate:** any single **discovery** source ID ≤ **35%** of firms in the qualifying 50. Pipeline export must print discovery-source distribution; fail export if gate broken.
+**Hard gate:** any single discovery source ID ≤ **35%** of firms in the qualifying 50. Export fails if broken.
 
 ## Customer schema (CSV)
 
 | Column | Notes |
 |--------|--------|
-| `fo_id` | Stable id (slug or hash) |
+| `fo_id` | Stable id (slug + hash) |
 | `legal_name` | |
 | `common_name` | |
 | `fo_type` | `single_family_office` \| `multi_family_office` |
-| `hq_city` | |
-| `hq_country` | |
-| `website` | |
-| `linkedin_company_url` | |
-| `aum_note` | Text; blank ok if unverified |
-| `investment_thesis` | |
-| `investment_mandates` | |
-| `principal_name` | |
-| `principal_title` | |
-| `principal_linkedin` | |
-| `principal_email` | Only if validation allows |
-| `principal_phone` | Only if validation allows |
-| `signal_1_summary` | |
-| `signal_1_date` | ISO date if known |
-| `signal_1_url` | |
-| `signal_2_summary` | Optional |
-| `signal_2_date` | Optional |
-| `signal_2_url` | Optional |
+| `hq_city` / `hq_country` | |
+| `website` / `linkedin_company_url` | |
+| `aum_note` | Text; blank if unverified |
+| `investment_thesis` / `investment_mandates` | |
+| `principal_name` / `principal_title` / `principal_linkedin` | |
+| `principal_email` / `principal_phone` | Only if provenance allows |
+| `signal_1_*` / `signal_2_*` | Summary, date, URL |
 | `inclusion_evidence_summary` | Why this firm is an FO |
 | `confidence_overall` | 0.0–1.0 |
 
 ## Provenance sidecar (JSONL)
 
-One object per `fo_id`:
+One object per `fo_id` in `data/export/provenance.jsonl`:
 
-- `fields`: map of column → provenance object (above)
-- `discovery_source_class`: primary discovery class letter
-- `discovery_source_ids`: list of source ids used to **find** the firm
-- `proof_source_ids`: sources used to **prove** FO type
-- `rejection_reason`: if rejected
+- `fields`: column → provenance object  
+- `discovery_source_class` / `discovery_source_ids`  
+- `proof_source_ids`  
+- rejection detail lives in audit when not shipped  
 
 ## Pipeline stages
 
-1. **discover** → `data/raw/candidates.jsonl`
-2. **enrich** → `data/processed/enriched.jsonl` (classify FO type + fill cells)
-3. **validate** → pass / reject; validation layer checks inclusion + cell integrity
-4. **export** → `data/export/family_offices_50.csv` + provenance JSONL; enforce 50 count + 35% gate
+1. **discover** → `data/raw/candidates.jsonl` (+ `discovery_stats.json`)  
+2. **enrich** → `data/processed/enriched.jsonl` (classify FO type + fill cells)  
+3. **validate** → pass / reject; inclusion + cell integrity + entity hygiene  
+4. **export** → `family_offices_50.csv` + provenance; enforce 50 count + 35% gate  
+5. **build_index** → LangChain FAISS under `data/index/`  
 
 Manual spot-checks and judgment notes are allowed. Manual record-by-record CSV compilation is not.
 
 ## Micro-RAG + product
 
-- Chunk each shipped record into retrieval units (entity card + principal + signals) via LangChain `Document`s
-- Embeddings: OpenAI `text-embedding-3-small` via `OPENAI_API_KEY` (**paid — disclosed design decision**)
-- Index: LangChain FAISS vectorstore (`python -m pipeline.build_index` → `data/index/`)
-- Orchestration: **LangGraph** bounded graph `retrieve → ground → generate|decline` (not multi-agent swarm)
-- Retrieval: structural filters (`fo_type`, `hq_country`, inferred from query) + semantic top-k
-- **Grounding control (working gate):** min top relevance score + ≥1 usable chunk; else decline node — not prompt-only
-- Answer LLM: OpenAI `gpt-4o-mini` over retrieved context only; `GEMINI_API_KEY` reserved as backup
-- Customer UI: **Next.js** (App Router) — IR user opens live URL, asks a question, understands results without reading code
-- API: FastAPI (`api/`) — `/health`, `/search`, `/ask`
-- Deploy: **GCP Cloud Run** — services `fo-intel-api` + `fo-intel-web`
+- Chunk each shipped record into LangChain `Document`s: **entity** (+ **principal** / **signal** when present)  
+- Embeddings: OpenAI `text-embedding-3-small` (**paid — disclosed**)  
+- Index: LangChain FAISS (`python -m pipeline.build_index`) — **124** documents / **50** firms after final rename pass  
+- Orchestration: **LangGraph** bounded graph `retrieve → ground → generate|decline` (not a multi-agent swarm)  
+- Retrieval: semantic top-k + optional structural filters (`fo_type` / country cues from query)  
+- **Grounding control (working gate):** relevance score + distance thresholds; fail → readable decline — not prompt-only  
+- Answer LLM: OpenAI `gpt-4o-mini` over retrieved context only  
+- Customer UI: **Next.js** — IR user opens live URL, asks a question, reads prose (success or decline) without decoding pipeline vocabulary  
+- API: FastAPI — `/health`, `/search`, `/ask`  
+- Deploy: **GCP Cloud Run** — `fo-intel-api` + `fo-intel-web`  
 
 ## Stack summary
 
@@ -133,22 +137,22 @@ Manual spot-checks and judgment notes are allowed. Manual record-by-record CSV c
 | Pipeline | Python 3.11+ (`pipeline/`) |
 | API | FastAPI (`api/`) |
 | Customer UI | Next.js (`web/`) |
-| RAG primitives | LangChain (Documents, OpenAIEmbeddings, FAISS) |
-| Orchestration | LangGraph (thin retrieve→ground→answer\|decline) |
+| RAG primitives | LangChain Documents / OpenAIEmbeddings / FAISS |
+| Orchestration | LangGraph (retrieve → ground → answer\|decline) |
 | Embeddings | OpenAI `text-embedding-3-small` |
-| Vectors | FAISS via LangChain |
-| Answer LLM | OpenAI `gpt-4o-mini` (Gemini backup) |
+| Answer LLM | OpenAI `gpt-4o-mini` |
 | Hosting | GCP Cloud Run |
-| Repo target | `Atif1299/fo-intel-differentiator` |
+| Repo | https://github.com/Atif1299/fo-intel-differentiator |
 
 ## Paid tooling disclosure
 
-Assessment allows paid tools if owned as a design decision. We use OpenAI + Cloud Run for retrieval quality and a production-shaped customer UI. Free-tier alternatives remain possible but are not the primary path for this submission.
+Assessment allows paid tools if owned as a design decision. We use OpenAI + Cloud Run for retrieval quality and a production-shaped customer UI.
 
 ## Out of scope (assessment discipline)
 
-- Full commercial CRM
-- Paid lead databases as primary discovery
-- Localhost-only or notebook-only demos
-- One-source bulk copy of a public FO list
-- Jinja as the customer-facing product (API may keep a debug page only)
+- Full commercial CRM  
+- Paid lead databases as primary discovery or FO-type proof  
+- Localhost-only or notebook-only demos  
+- One-source bulk copy of a public FO list  
+- Multi-agent theater on a 50-row corpus  
+- Inventing contacts or FO types to fill cells  

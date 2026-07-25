@@ -1,6 +1,8 @@
 # Validation chains (3 records)
 
-Selected from pipeline export `data/export/family_offices_50.csv` (not hand-picked into the CSV — only documented here after export).
+Stage 1 deliverable: full chain for three records selected from the pipeline export `data/export/family_offices_50.csv` (documented after export — not hand-inserted into the CSV).
+
+Export snapshot these chains reconcile with: **50** rows, SFO **31** / MFO **19**, max primary discovery share **28%** (`rss:google_news_fo`) — `data/export/export_stats.json`.
 
 ## Record 1 — `fo_id`: `matter-family-office-8dd64fb0e1`
 
@@ -17,10 +19,10 @@ Selected from pipeline export `data/export/family_offices_50.csv` (not hand-pick
    Website already institutional → Class C fetch of homepage + discovery URLs → `gpt-4o-mini` JSON classify/extract. Self-description as multifamily office with integrated FO services.
 
 4. **Validation logic**  
-   `inclusion_pass=true`; `fo_type` shippable; non-empty inclusion evidence; proof URLs present (`class_c_fetch`, `fo_website`); no name/domain duplicate vs higher-confidence row; contact fields left blank or provenance-backed (principal Katherine Lintz retained from page extract).
+   `inclusion_pass=true`; `fo_type` shippable; non-empty inclusion evidence; proof URLs present (`class_c_fetch`, `fo_website`); no name/domain duplicate vs higher-confidence row; contact fields left blank or provenance-backed (principal Katherine Lintz retained from page extract when sourced).
 
 5. **Confidence assessment**  
-   High: firm site language matches MFO inclusion bar; discovery ≠ sole proof.
+   High for FO type: firm site language matches MFO inclusion bar; discovery is not the sole proof.
 
 6. **Exact sources / links**  
    - https://www.matterfamilyoffice.com/  
@@ -47,7 +49,7 @@ Selected from pipeline export `data/export/family_offices_50.csv` (not hand-pick
    Passed Rule 2 (affirmative FO entity language on own site materials); Rule 1 provenance on filled cells; no duplicate name/domain; shipped as SFO without relabel.
 
 5. **Confidence assessment**  
-   High for FO type from primary site text; principal/email blank (honest `could_not_verify`).
+   High for FO type from primary site text; principal email/phone blank where not verified (honest `could_not_verify`).
 
 6. **Exact sources / links**  
    - https://www.ckandcomp.com  
@@ -79,10 +81,21 @@ Selected from pipeline export `data/export/family_offices_50.csv` (not hand-pick
    - https://westermancapital.com/  
    - Discovery seed: SWFI/public FO profile scrape (`swfi:fo_profiles`) — list used only to find the name, not as sole FO-type proof.
 
-### Observed vs assumed (shared)
+---
+
+## Observed vs assumed (shared across the three)
 
 | Claim | Status |
 |-------|--------|
-| Firm is an FO entity of stated type | Verified via Class C page text + validator gates |
-| Discovery source mix on final 50 | Verified in `export_stats.json` (max primary share 24% RSS) |
-| Email/phone reachability | Not claimed; blanked when provenance insufficient |
+| Firm is an FO entity of stated type | **Verified** via Class C page text + validator gates |
+| Discovery ≠ sole proof | **Verified** — each chain shows Class C after A/B find |
+| Discovery mix on final 50 | **Verified** in `export_stats.json` (max primary share **28%** RSS) |
+| Email/phone reachability | **Not claimed** when blank; blanked when provenance insufficient |
+| What could be wrong | Marketing copy that mimics FO language without being an FO entity; Falcon sample check is the external falsifier |
+
+## How the validation layer itself was checked
+
+| Question | Evidence |
+|----------|----------|
+| Does it work? | Rejects non-inclusion / unknown_type / duplicates / hygiene fails into `data/audit/rejected.jsonl`; only 50 pass to export |
+| How well? | On this run: **201** rejects vs **50** passes (`validate_stats.json`); dominant reject = `inclusion_pass_false` (166) — gate is catching AI over-inclusion, not only format errors |
