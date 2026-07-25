@@ -20,6 +20,7 @@ from pipeline.validate_lib.checks import (
     contact_needs_blank,
     dedupe_keys,
     inclusion_checks,
+    maybe_improve_geo_name,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,6 +93,7 @@ def validate() -> tuple[Path, Path]:
             continue
 
         row = _apply_contact_governance(row)
+        maybe_improve_geo_name(row)
         row["validated_at"] = utc_now_iso()
         if name_key:
             seen_names.add(name_key)

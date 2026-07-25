@@ -342,15 +342,3 @@ def run_search(query: str, limit: int = 5) -> dict[str, Any]:
         "limit": limit,
         "filters": {"fo_type": fo_type, "hq_country": hq_country},
     }
-
-
-# Back-compat helpers used by build tooling / tests
-def build_index_from_csv(csv_path: str, index_dir: str) -> None:
-    from pipeline.build_index import build_index
-
-    build_index(Path(csv_path), Path(index_dir))
-
-
-def retrieve(query: str, k: int = 5) -> list[dict]:
-    out = run_search(query, limit=k)
-    return list(out.get("results") or [])

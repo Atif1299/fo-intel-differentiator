@@ -1,15 +1,17 @@
 {
-  "input_enriched": 234,
-  "passed": 51,
-  "rejected": 183,
+  "input_enriched": 251,
+  "passed": 50,
+  "rejected": 201,
   "rejection_reasons": {
-    "duplicate_name": 28,
-    "duplicate_website_domain": 1,
-    "inclusion_pass_false": 154
+    "entity_category_only": 2,
+    "entity_geo_generic_unverified_domain": 1,
+    "duplicate_name": 30,
+    "entity_denylist": 2,
+    "inclusion_pass_false": 166
   },
   "passed_by_fo_type": {
     "multi_family_office": 19,
-    "single_family_office": 32
+    "single_family_office": 31
   },
-  "finished_at": "2026-07-24T22:17:30+00:00"
+  "finished_at": "2026-07-25T11:05:59+00:00"
 }

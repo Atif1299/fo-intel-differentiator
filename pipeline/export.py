@@ -108,23 +108,6 @@ def select_fifty(rows: list[dict[str, Any]], target: int = TARGET) -> list[dict[
             selected.append(r)
             counts[src] += 1
 
-    # Last resort: try swapping — drop lowest-confidence from over-represented, add from under
-    if len(selected) < target:
-        pool = [r for r in ordered if r not in selected]
-        for candidate in pool:
-            if len(selected) >= target:
-                break
-            src = _primary_source(candidate)
-            if counts[src] < max_per_source:
-                selected.append(candidate)
-                counts[src] += 1
-                continue
-            # find a selected row with same or higher count that we can replace? skip
-            # find selected from a source at max that has lower conf — replace only if helps diversity
-            over = [s for s in selected if counts[_primary_source(s)] >= max_per_source]
-            # cannot add this source; try next
-            _ = over
-
     return selected[:target]
 
 

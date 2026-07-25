@@ -35,7 +35,7 @@ DROPPED = AUDIT / "enrich_dropped.jsonl"
 
 ENRICH_BUDGET = 120
 RESUME_CAP = 100
-RESUME_PASS_TARGET = 80  # buffer for validation rejects / dedupe
+RESUME_PASS_TARGET = 95  # buffer after entity-hygiene rejects
 EXTRACT_KEYS = [
     "legal_name",
     "common_name",

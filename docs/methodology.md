@@ -67,14 +67,14 @@ Deterministic gates — no second LLM for inclusion:
 
 - Exactly **50** rows in `data/export/family_offices_50.csv`  
 - Sidecar `data/export/provenance.jsonl`  
-- Primary discovery source share ≤ **35%** (observed max **24%** = `rss:google_news_fo`)  
-- Shipped mix: SFO **32**, MFO **18** (≥15 SFO target met without relabeling)
+- Primary discovery source share ≤ **35%** (post-hygiene max **28%** = `rss:google_news_fo`)  
+- Shipped mix: SFO **31**, MFO **19** (≥15 SFO target met without relabeling)
 
-### Volumes (Phase 3 run)
+### Volumes (Phase 3 + hygiene)
 
-- Validated pass **51** / reject **183** (`validate_stats.json`)  
+- Validated pass **50** / reject **201** after entity-hygiene (`validate_stats.json`)  
 - Exported **50** (`export_stats.json`)  
-- Three full chains: `docs/validation_chains.md`
+- Three full chains: `docs/validation_chains.md` (Matter / ckandcompany / Westerman — still in export)
 
 ## Source classes → claim types
 
@@ -88,9 +88,11 @@ Deterministic gates — no second LLM for inclusion:
 ## Material blind spots that remained
 
 - Large reject volume is expected: news/EDGAR/list noise fails Rule 2 or dedupe  
-- Enrich resume stopped at shippable **80**; some kept candidates remain un-checked  
+- **Entity-hygiene layer:** refuse report/title crumbs, hub/publisher firm homes, category-only names, geo SERP crumbs without known firm domains; blank news-host websites rather than ship them as identity  
+- DDG hygiene top-up used to refill to 50 after hygiene drops  
 - Class B / RSS discovery still needs Class C proof — list membership alone does not ship  
 - Wiki adapter contributed little unique after merge  
 - Geography skew toward US English web/news  
 - Many shipped rows still lack principal email/phone (honest blanks)  
-- A few RSS-discovered names resolve to news/article hosts rather than pristine corporate homes — validator + export still require FO evidence text
+- Geo-named rows remain only when mapped to known firm domains (e.g. Miami → themiamifamilyoffice.com)  
+- Directory-only evidence (e.g. Altss) may ship with blank website — weaker corroboration; disclosed
