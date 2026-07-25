@@ -1,0 +1,11 @@
+__pycache__
+*.pyc
+.venv
+.env
+web/node_modules
+web/.next
+data/raw
+data/processed
+data/audit
+*.md
+docs

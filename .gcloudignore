@@ -1,0 +1,14 @@
+# Cloud Build upload rules (overrides .gitignore when present)
+.git
+.venv
+__pycache__
+*.pyc
+.env
+web/node_modules
+web/.next
+data/raw
+data/processed
+data/audit
+docs
+*.md
+!README.md
