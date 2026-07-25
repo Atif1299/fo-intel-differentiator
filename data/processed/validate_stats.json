@@ -1,0 +1,15 @@
+{
+  "input_enriched": 234,
+  "passed": 51,
+  "rejected": 183,
+  "rejection_reasons": {
+    "duplicate_name": 28,
+    "duplicate_website_domain": 1,
+    "inclusion_pass_false": 154
+  },
+  "passed_by_fo_type": {
+    "multi_family_office": 19,
+    "single_family_office": 32
+  },
+  "finished_at": "2026-07-24T22:17:30+00:00"
+}

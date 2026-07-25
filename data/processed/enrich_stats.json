@@ -1,0 +1,23 @@
+{
+  "input_candidates": 261,
+  "prefilter_kept": 247,
+  "prefilter_dropped": 14,
+  "mode": "resume",
+  "resume_added": 75,
+  "resume_cap": 100,
+  "pass_target": 80,
+  "errors": 0,
+  "processed": 234,
+  "by_fo_type": {
+    "unknown_type": 152,
+    "multi_family_office": 28,
+    "single_family_office": 54
+  },
+  "inclusion_pass_true": 80,
+  "inclusion_pass_false": 154,
+  "shippable_sfo_mfo": 80,
+  "with_website": 234,
+  "with_principal_name": 69,
+  "with_signal_1": 78,
+  "finished_at": "2026-07-24T22:17:16+00:00"
+}
