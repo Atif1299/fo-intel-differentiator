@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="FO Intel">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="55%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#e879f9"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#312e81" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#0b1020" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="320" fill="#0b1020"/>
+  <rect width="1280" height="320" fill="url(#glow)"/>
+  <circle cx="180" cy="70" r="3" fill="#a78bfa" opacity="0.85"/>
+  <circle cx="980" cy="90" r="2.5" fill="#34d399" opacity="0.8"/>
+  <circle cx="1100" cy="220" r="3" fill="#f472b6" opacity="0.75"/>
+  <circle cx="260" cy="240" r="2" fill="#22d3ee" opacity="0.7"/>
+  <text x="640" y="155" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="4" fill="url(#titleGrad)">FO INTEL</text>
+  <text x="640" y="210" text-anchor="middle" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="6" fill="#e5e7eb">FAMILY OFFICE INTELLIGENCE · MICRO-RAG</text>
+</svg>

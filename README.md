@@ -1,3 +1,28 @@
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="FO Intel — Family Office Intelligence" width="920"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI"/>
+  <img src="https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/LangGraph-1C3C3C?logo=langchain&logoColor=white" alt="LangGraph"/>
+  <img src="https://img.shields.io/badge/FAISS-OpenAI-412991?logo=openai&logoColor=white" alt="FAISS OpenAI"/>
+  <img src="https://img.shields.io/badge/GCP%20Cloud%20Run-4285F4?logo=googlecloud&logoColor=white" alt="GCP Cloud Run"/>
+</p>
+
+<p align="center"><b>Discover · prove · validate 50 family offices — then ask in natural language on a live customer UI.</b></p>
+
+<p align="center">
+  <a href="https://fo-intel-web-95044197271.us-central1.run.app">Live App</a> ·
+  <a href="DESIGN.md">Design</a> ·
+  <a href="docs/methodology.md">Methodology</a> ·
+  <a href="docs/tech_notes.md">Tech Notes</a> ·
+  <a href="https://fo-intel-api-95044197271.us-central1.run.app/docs">API Docs</a>
+</p>
+
+---
+
 # FO Intel — Differentiator Stage 1
 
 Pipeline-built dataset of **50 validated family office records**, served through a production-shaped Micro-RAG (LangChain FAISS + LangGraph grounding) and a **customer-facing** Next.js UI on GCP Cloud Run.
